@@ -11,10 +11,12 @@ import com.panther.takeaway.service.CategoryService;
 import com.panther.takeaway.service.DishFlavorService;
 import com.panther.takeaway.service.DishService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RequestMapping("/dish")
@@ -30,9 +32,17 @@ public class DishController {
     @Resource
     private CategoryService categoryService;
 
+    @Resource
+    private RedisTemplate<String,List<DishDto>> redisTemplate;
+
     @PostMapping
     public R<String> saveDish(@RequestBody DishDto dishDto){
         dishService.saveWithFlavor(dishDto);
+
+        // 修改缓存数据
+        String key = "dish_"+dishDto.getCategoryId()+"_1";
+        redisTemplate.delete(key);
+
         return R.success("菜品添加成功");
     }
 
@@ -85,6 +95,11 @@ public class DishController {
 
     @PutMapping
     public R<String> UpdateDish(@RequestBody DishDto dishDto){
+
+        // 修改缓存数据
+        String key = "dish_"+dishDto.getCategoryId()+"_1";
+        redisTemplate.delete(key);
+
         return dishService.updateWithFlavor(dishDto) ?
                 R.success("保存成功") : R.error("保存失败");
     }
@@ -92,13 +107,22 @@ public class DishController {
     @GetMapping("/list")
     public R<List<DishDto>> getAllDish(Dish dish){
 
+        // 动态构造key值
+        String key = "dish_"+dish.getCategoryId()+"_"+dish.getStatus();
+
+        List<DishDto> dishDtos = null;
+        dishDtos = (List<DishDto>) redisTemplate.opsForValue().get(key);
+        if( dishDtos != null){
+            return R.success(dishDtos);
+        }
+
         LambdaQueryWrapper<Dish> lqw = new LambdaQueryWrapper<>();
         lqw.eq(dish.getCategoryId() != null,Dish::getCategoryId,dish.getCategoryId());
         lqw.eq(Dish::getStatus,1);
         lqw.orderByAsc(Dish::getSort);
 
         List<Dish> list = dishService.list(lqw);
-        List<DishDto> dishDtos = null;
+
         dishDtos = list.stream().map((item) ->{
             DishDto dishDto = new DishDto();
             dishDto.setId(item.getId());
@@ -118,6 +142,8 @@ public class DishController {
             return dishDto;
         }).collect(Collectors.toList());
 
+        // 数据保存进Redis
+        redisTemplate.opsForValue().set(key,dishDtos,60, TimeUnit.MINUTES);
         return R.success(dishDtos);
     }
 

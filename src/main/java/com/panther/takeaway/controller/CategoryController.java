@@ -2,7 +2,6 @@ package com.panther.takeaway.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.panther.takeaway.DTO.DishDto;
 import com.panther.takeaway.common.R;
 import com.panther.takeaway.entity.Category;
 import com.panther.takeaway.service.CategoryService;

@@ -27,8 +27,7 @@ public class CommonControlelr {
 
     /**
      * 文件上传
-     * @param file
-     * @return
+     * @param file web端传入的文件
      */
     @PostMapping("/upload")
     public R<String> upload(MultipartFile file){
