@@ -34,7 +34,11 @@ public class loginchekfilter implements Filter {
             "/front/**",
             "/common/**",
             "/user/sendMsg",
-            "/user/login"
+            "/user/login",
+            "/doc.html",
+            "/webjars/**",
+            "/swagger-resources",
+            "/v2/api-docs"
         };
         // 匹配路径
         boolean exit = checkUrl(urls, requestURI);
