@@ -49,7 +49,7 @@ https://www.aliyundrive.com/s/AnRReoe66dQ
 
 访问前端工程，地址：http://localhost:9009
 
-![](\img\前端页面效果.png)
+![](./img/前端页面效果.png)
 
 ### 后端工程
 
