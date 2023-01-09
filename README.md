@@ -49,11 +49,11 @@ https://www.aliyundrive.com/s/AnRReoe66dQ
 
 访问前端工程，地址：http://localhost:9009
 
-![](D:\download\项目区\javaFrame\瑞吉外卖\takeaway\img\前端页面效果.png)
+![](\img\前端页面效果.png)
 
 ### 后端工程
 
-![](D:\download\项目区\javaFrame\瑞吉外卖\takeaway\img\后台管理系统效果图.png)
+![](img\后台管理系统效果图.png)
 
 Swagger  
 接口文档访问路径为 http://localhost:8080/doc.html
